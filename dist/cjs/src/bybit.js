@@ -7,7 +7,7 @@ var Precise = require('./base/Precise.js');
 var sha256 = require('./static_dependencies/noble-hashes/sha256.js');
 var rsa = require('./base/functions/rsa.js');
 
-//  ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //  ---------------------------------------------------------------------------
 /**
  * @class bybit
@@ -338,6 +338,7 @@ class bybit extends bybit$1 {
                         'v5/account/contract-transaction-log': 1,
                         'v5/account/smp-group': 1,
                         'v5/account/mmp-state': 5,
+                        'v5/account/withdrawal': 5,
                         // asset
                         'v5/asset/exchange/query-coin-list': 0.5,
                         'v5/asset/exchange/convert-result-query': 0.5,
@@ -2778,8 +2779,7 @@ class bybit extends bybit$1 {
         for (let i = 0; i < tickerList.length; i++) {
             tickerList[i]['timestamp'] = timestamp; // will be removed inside the parser
         }
-        const result = this.parseFundingRates(tickerList);
-        return this.filterByArray(result, 'symbol', symbols);
+        return this.parseFundingRates(tickerList, symbols);
     }
     /**
      * @method

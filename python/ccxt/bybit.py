@@ -355,6 +355,7 @@ class bybit(Exchange, ImplicitAPI):
                         'v5/account/contract-transaction-log': 1,
                         'v5/account/smp-group': 1,
                         'v5/account/mmp-state': 5,
+                        'v5/account/withdrawal': 5,
                         # asset
                         'v5/asset/exchange/query-coin-list': 0.5,  # 100/s => cost = 50 / 100 = 0.5
                         'v5/asset/exchange/convert-result-query': 0.5,  # 100/s => cost = 50 / 100 = 0.5
@@ -2699,8 +2700,7 @@ class bybit(Exchange, ImplicitAPI):
         timestamp = self.safe_integer(response, 'time')
         for i in range(0, len(tickerList)):
             tickerList[i]['timestamp'] = timestamp  # will be removed inside the parser
-        result = self.parse_funding_rates(tickerList)
-        return self.filter_by_array(result, 'symbol', symbols)
+        return self.parse_funding_rates(tickerList, symbols)
 
     def fetch_funding_rate_history(self, symbol: Str = None, since: Int = None, limit: Int = None, params={}):
         """

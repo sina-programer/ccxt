@@ -6,7 +6,7 @@ var number = require('./base/functions/number.js');
 var errors = require('./base/errors.js');
 var sha512 = require('./static_dependencies/noble-hashes/sha512.js');
 
-//  ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 /**
  * @class gate
  * @augments Exchange
@@ -1994,8 +1994,7 @@ class gate extends gate$1 {
         //        }
         //    ]
         //
-        const result = this.parseFundingRates(response);
-        return this.filterByArray(result, 'symbol', symbols);
+        return this.parseFundingRates(response, symbols);
     }
     parseFundingRate(contract, market = undefined) {
         //
@@ -2426,7 +2425,8 @@ class gate extends gate$1 {
             const chainKeys = Object.keys(withdrawFixOnChains);
             for (let i = 0; i < chainKeys.length; i++) {
                 const chainKey = chainKeys[i];
-                result['networks'][chainKey] = {
+                const networkCode = this.networkIdToCode(chainKey, this.safeString(fee, 'currency'));
+                result['networks'][networkCode] = {
                     'withdraw': {
                         'fee': this.parseNumber(withdrawFixOnChains[chainKey]),
                         'percentage': false,

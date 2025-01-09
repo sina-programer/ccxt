@@ -2028,8 +2028,7 @@ class gate extends Exchange {
             //        }
             //    )
             //
-            $result = $this->parse_funding_rates($response);
-            return $this->filter_by_array($result, 'symbol', $symbols);
+            return $this->parse_funding_rates($response, $symbols);
         }) ();
     }
 
@@ -2481,7 +2480,8 @@ class gate extends Exchange {
             $chainKeys = is_array($withdrawFixOnChains) ? array_keys($withdrawFixOnChains) : array();
             for ($i = 0; $i < count($chainKeys); $i++) {
                 $chainKey = $chainKeys[$i];
-                $result['networks'][$chainKey] = array(
+                $networkCode = $this->network_id_to_code($chainKey, $this->safe_string($fee, 'currency'));
+                $result['networks'][$networkCode] = array(
                     'withdraw' => array(
                         'fee' => $this->parse_number($withdrawFixOnChains[$chainKey]),
                         'percentage' => false,

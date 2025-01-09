@@ -344,6 +344,7 @@ class bybit extends Exchange {
                         'v5/account/contract-transaction-log' => 1,
                         'v5/account/smp-group' => 1,
                         'v5/account/mmp-state' => 5,
+                        'v5/account/withdrawal' => 5,
                         // asset
                         'v5/asset/exchange/query-coin-list' => 0.5, // 100/s => cost = 50 / 100 = 0.5
                         'v5/asset/exchange/convert-result-query' => 0.5, // 100/s => cost = 50 / 100 = 0.5
@@ -2800,8 +2801,7 @@ class bybit extends Exchange {
             for ($i = 0; $i < count($tickerList); $i++) {
                 $tickerList[$i]['timestamp'] = $timestamp; // will be removed inside the parser
             }
-            $result = $this->parse_funding_rates($tickerList);
-            return $this->filter_by_array($result, 'symbol', $symbols);
+            return $this->parse_funding_rates($tickerList, $symbols);
         }) ();
     }
 

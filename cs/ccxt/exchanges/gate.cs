@@ -2010,8 +2010,7 @@ public partial class gate : Exchange
         //        }
         //    ]
         //
-        object result = this.parseFundingRates(response);
-        return this.filterByArray(result, "symbol", symbols);
+        return this.parseFundingRates(response, symbols);
     }
 
     public override object parseFundingRate(object contract, object market = null)
@@ -2486,7 +2485,8 @@ public partial class gate : Exchange
             for (object i = 0; isLessThan(i, getArrayLength(chainKeys)); postFixIncrement(ref i))
             {
                 object chainKey = getValue(chainKeys, i);
-                ((IDictionary<string,object>)getValue(result, "networks"))[(string)chainKey] = new Dictionary<string, object>() {
+                object networkCode = this.networkIdToCode(chainKey, this.safeString(fee, "currency"));
+                ((IDictionary<string,object>)getValue(result, "networks"))[(string)networkCode] = new Dictionary<string, object>() {
                     { "withdraw", new Dictionary<string, object>() {
                         { "fee", this.parseNumber(getValue(withdrawFixOnChains, chainKey)) },
                         { "percentage", false },

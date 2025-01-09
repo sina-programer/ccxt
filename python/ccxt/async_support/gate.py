@@ -1962,8 +1962,7 @@ class gate(Exchange, ImplicitAPI):
         #        }
         #    ]
         #
-        result = self.parse_funding_rates(response)
-        return self.filter_by_array(result, 'symbol', symbols)
+        return self.parse_funding_rates(response, symbols)
 
     def parse_funding_rate(self, contract, market: Market = None) -> FundingRate:
         #
@@ -2377,7 +2376,8 @@ class gate(Exchange, ImplicitAPI):
             chainKeys = list(withdrawFixOnChains.keys())
             for i in range(0, len(chainKeys)):
                 chainKey = chainKeys[i]
-                result['networks'][chainKey] = {
+                networkCode = self.network_id_to_code(chainKey, self.safe_string(fee, 'currency'))
+                result['networks'][networkCode] = {
                     'withdraw': {
                         'fee': self.parse_number(withdrawFixOnChains[chainKey]),
                         'percentage': False,

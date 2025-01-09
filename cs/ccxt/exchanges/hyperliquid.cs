@@ -1005,8 +1005,7 @@ public partial class hyperliquid : Exchange
             object data = this.extend(this.safeDict(universe, i, new Dictionary<string, object>() {}), this.safeDict(assetCtxs, i, new Dictionary<string, object>() {}));
             ((IList<object>)result).Add(data);
         }
-        object funding_rates = this.parseFundingRates(result);
-        return this.filterByArray(funding_rates, "symbol", symbols);
+        return this.parseFundingRates(result, symbols);
     }
 
     public override object parseFundingRate(object info, object market = null)
@@ -2448,7 +2447,7 @@ public partial class hyperliquid : Exchange
             market = this.safeMarket(marketId, market);
         }
         object symbol = getValue(market, "symbol");
-        object timestamp = this.safeInteger2(order, "timestamp", "statusTimestamp");
+        object timestamp = this.safeInteger(entry, "timestamp");
         object status = this.safeString2(order, "status", "ccxtStatus");
         order = this.omit(order, new List<object>() {"ccxtStatus"});
         object side = this.safeString(entry, "side");
@@ -2465,7 +2464,7 @@ public partial class hyperliquid : Exchange
             { "timestamp", timestamp },
             { "datetime", this.iso8601(timestamp) },
             { "lastTradeTimestamp", null },
-            { "lastUpdateTimestamp", null },
+            { "lastUpdateTimestamp", this.safeInteger(order, "statusTimestamp") },
             { "symbol", symbol },
             { "type", this.parseOrderType(this.safeStringLower(entry, "orderType")) },
             { "timeInForce", this.safeStringUpper(entry, "tif") },
@@ -3568,8 +3567,7 @@ public partial class hyperliquid : Exchange
         await this.loadMarkets();
         symbols = this.marketSymbols(symbols);
         object swapMarkets = await this.fetchSwapMarkets();
-        object result = this.parseOpenInterests(swapMarkets);
-        return this.filterByArray(result, "symbol", symbols);
+        return this.parseOpenInterests(swapMarkets, symbols);
     }
 
     /**

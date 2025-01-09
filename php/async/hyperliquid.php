@@ -999,8 +999,7 @@ class hyperliquid extends Exchange {
                 );
                 $result[] = $data;
             }
-            $funding_rates = $this->parse_funding_rates($result);
-            return $this->filter_by_array($funding_rates, 'symbol', $symbols);
+            return $this->parse_funding_rates($result, $symbols);
         }) ();
     }
 
@@ -2328,7 +2327,7 @@ class hyperliquid extends Exchange {
             $market = $this->safe_market($marketId, $market);
         }
         $symbol = $market['symbol'];
-        $timestamp = $this->safe_integer_2($order, 'timestamp', 'statusTimestamp');
+        $timestamp = $this->safe_integer($entry, 'timestamp');
         $status = $this->safe_string_2($order, 'status', 'ccxtStatus');
         $order = $this->omit($order, array( 'ccxtStatus' ));
         $side = $this->safe_string($entry, 'side');
@@ -2344,7 +2343,7 @@ class hyperliquid extends Exchange {
             'timestamp' => $timestamp,
             'datetime' => $this->iso8601($timestamp),
             'lastTradeTimestamp' => null,
-            'lastUpdateTimestamp' => null,
+            'lastUpdateTimestamp' => $this->safe_integer($order, 'statusTimestamp'),
             'symbol' => $symbol,
             'type' => $this->parse_order_type($this->safe_string_lower($entry, 'orderType')),
             'timeInForce' => $this->safe_string_upper($entry, 'tif'),
@@ -3380,8 +3379,7 @@ class hyperliquid extends Exchange {
             Async\await($this->load_markets());
             $symbols = $this->market_symbols($symbols);
             $swapMarkets = Async\await($this->fetch_swap_markets());
-            $result = $this->parse_open_interests($swapMarkets);
-            return $this->filter_by_array($result, 'symbol', $symbols);
+            return $this->parse_open_interests($swapMarkets, $symbols);
         }) ();
     }
 

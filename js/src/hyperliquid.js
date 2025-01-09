@@ -971,8 +971,7 @@ export default class hyperliquid extends Exchange {
             const data = this.extend(this.safeDict(universe, i, {}), this.safeDict(assetCtxs, i, {}));
             result.push(data);
         }
-        const funding_rates = this.parseFundingRates(result);
-        return this.filterByArray(funding_rates, 'symbol', symbols);
+        return this.parseFundingRates(result, symbols);
     }
     parseFundingRate(info, market = undefined) {
         //
@@ -2257,7 +2256,7 @@ export default class hyperliquid extends Exchange {
             market = this.safeMarket(marketId, market);
         }
         const symbol = market['symbol'];
-        const timestamp = this.safeInteger2(order, 'timestamp', 'statusTimestamp');
+        const timestamp = this.safeInteger(entry, 'timestamp');
         const status = this.safeString2(order, 'status', 'ccxtStatus');
         order = this.omit(order, ['ccxtStatus']);
         let side = this.safeString(entry, 'side');
@@ -2273,7 +2272,7 @@ export default class hyperliquid extends Exchange {
             'timestamp': timestamp,
             'datetime': this.iso8601(timestamp),
             'lastTradeTimestamp': undefined,
-            'lastUpdateTimestamp': undefined,
+            'lastUpdateTimestamp': this.safeInteger(order, 'statusTimestamp'),
             'symbol': symbol,
             'type': this.parseOrderType(this.safeStringLower(entry, 'orderType')),
             'timeInForce': this.safeStringUpper(entry, 'tif'),
@@ -3272,8 +3271,7 @@ export default class hyperliquid extends Exchange {
         await this.loadMarkets();
         symbols = this.marketSymbols(symbols);
         const swapMarkets = await this.fetchSwapMarkets();
-        const result = this.parseOpenInterests(swapMarkets);
-        return this.filterByArray(result, 'symbol', symbols);
+        return this.parseOpenInterests(swapMarkets, symbols);
     }
     /**
      * @method

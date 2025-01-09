@@ -6,7 +6,7 @@ var Precise = require('./base/Precise.js');
 var number = require('./base/functions/number.js');
 var sha256 = require('./static_dependencies/noble-hashes/sha256.js');
 
-//  ---------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //  ---------------------------------------------------------------------------
 /**
  * @class okx
@@ -994,7 +994,7 @@ class okx extends okx$1 {
                     'BHP': 'BHP',
                     'APT': 'Aptos',
                     'ARBONE': 'Arbitrum One',
-                    'AVAXC': 'Avalanche C',
+                    'AVAXC': 'Avalanche C-Chain',
                     'AVAXX': 'Avalanche X-Chain',
                     'ARK': 'ARK',
                     'AR': 'Arweave',
@@ -1803,8 +1803,8 @@ class okx extends okx$1 {
                 currencyActive = (active) ? active : currencyActive;
                 const networkId = this.safeString(chain, 'chain');
                 if ((networkId !== undefined) && (networkId.indexOf('-') >= 0)) {
-                    const parts = networkId.split('-');
-                    const chainPart = this.safeString(parts, 1, networkId);
+                    const parts = networkId.split('-').slice(1);
+                    const chainPart = parts.join('-');
                     const networkCode = this.networkIdToCode(chainPart, currency['code']);
                     const precision = this.parsePrecision(this.safeString(chain, 'wdTickSz'));
                     if (maxPrecision === undefined) {
